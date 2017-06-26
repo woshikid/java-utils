@@ -60,6 +60,11 @@ public class XmlUtils {
 	 * @param encoding
 	 * @param fragment 如果为true，则不输出xml头
 	 * <?xml version="1.0" encoding="UTF-8"?>
+	 * @XmlRootElement(name="Config")
+	 * @XmlAccessorType(XmlAccessType.FIELD)
+	 * @XmlElementWrapper(name="Servers")
+	 * @XmlElement(name="Server")
+	 * @XmlJavaTypeAdapter(JaxbDateAdapter.class)
 	 * @return
 	 */
 	public static String toXml(Object object, String encoding, boolean fragment) {
