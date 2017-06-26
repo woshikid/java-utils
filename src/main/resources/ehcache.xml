@@ -1,0 +1,16 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+	maxBytesLocalHeap="100M">
+	
+	<defaultCache
+			timeToIdleSeconds="${cache.expiration}"
+			timeToLiveSeconds="${cache.expiration}"
+			memoryStoreEvictionPolicy="LRU">
+	</defaultCache>
+	
+	<cache name="cachingFilter"
+		maxBytesLocalHeap="10M"
+		timeToIdleSeconds="${cache.page.idle}"
+		timeToLiveSeconds="${cache.page.expiration}" />
+	
+</ehcache>
