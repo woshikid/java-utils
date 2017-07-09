@@ -1,5 +1,6 @@
 package com.github.woshikid.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 	
 	public static int utf8Size(Object input){
 		try{
-			return String.valueOf(input).getBytes("UTF-8").length;
+			return String.valueOf(input).getBytes(StandardCharsets.UTF_8).length;
 		}catch(Exception e){
 			return -1;
 		}

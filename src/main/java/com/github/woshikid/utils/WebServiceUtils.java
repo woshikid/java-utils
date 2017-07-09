@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -213,12 +214,12 @@ public class WebServiceUtils {
 		logger.info("[{}] requestText={}", threadId, requestText);
 		
 		//invoke
-		HttpUtils.Response response = HttpUtils.request(url, header, requestText.getBytes("UTF-8"));
+		HttpUtils.Response response = HttpUtils.request(url, header, requestText.getBytes(StandardCharsets.UTF_8));
 		
 		//返回的原始文本
 		String responseText;
 		if (response.charset == null) {
-			responseText = new String(response.data, "UTF-8");
+			responseText = new String(response.data, StandardCharsets.UTF_8);
 		} else {
 			responseText = new String(response.data, response.charset);
 		}

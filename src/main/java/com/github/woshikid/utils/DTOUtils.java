@@ -5,6 +5,10 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -140,6 +144,12 @@ public class DTOUtils {
 				return (T)(Long)((Date)source).getTime();
 			} else if (source instanceof Calendar) {
 				return (T)(Long)((Calendar)source).getTimeInMillis();
+			} else if (source instanceof LocalDate) {
+				return (T)(Long)DateUtils.toInstant((LocalDate)source).toEpochMilli();
+			} else if (source instanceof LocalDateTime) {
+				return (T)(Long)DateUtils.toInstant((LocalDateTime)source).toEpochMilli();
+			} else if (source instanceof Instant) {
+				return (T)(Long)((Instant)source).toEpochMilli();
 			}
 		} else if (targetClass == float.class || targetClass == Float.class) {
 			if (source instanceof Number) {
@@ -177,6 +187,12 @@ public class DTOUtils {
 				return (T)new Date((Long)source);
 			} else if (source instanceof String) {
 				return (T)DateUtils.toDate((String)source);
+			} else if (source instanceof LocalDate) {
+				return (T)DateUtils.toDate((LocalDate)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)DateUtils.toDate((LocalDateTime)source);
+			} else if (source instanceof Instant) {
+				return (T)Date.from((Instant)source);
 			}
 		} else if (targetClass == Calendar.class) {
 			if (source instanceof Date) {
@@ -185,10 +201,80 @@ public class DTOUtils {
 				return (T)DateUtils.toCalendar((Long)source);
 			} else if (source instanceof String) {
 				return (T)DateUtils.toCalendar((String)source);
+			} else if (source instanceof LocalDate) {
+				return (T)DateUtils.toCalendar((LocalDate)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)DateUtils.toCalendar((LocalDateTime)source);
+			} else if (source instanceof Instant) {
+				return (T)DateUtils.toCalendar((Instant)source);
+			}
+		} else if (targetClass == LocalDate.class) {
+			if (source instanceof Long) {
+				return (T)DateUtils.toLocalDate((Long)source);
+			} else if (source instanceof Date) {
+				return (T)DateUtils.toLocalDate((Date)source);
+			} else if (source instanceof Calendar) {
+				return (T)DateUtils.toLocalDate(((Calendar)source).getTime());
+			} else if (source instanceof String) {
+				return (T)DateUtils.toLocalDate((String)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)((LocalDateTime)source).toLocalDate();
+			} else if (source instanceof Instant) {
+				return (T)DateUtils.toLocalDate((Instant)source);
+			}
+		} else if (targetClass == LocalTime.class) {
+			if (source instanceof Long) {
+				return (T)DateUtils.toLocalTime((Long)source);
+			} else if (source instanceof Date) {
+				return (T)DateUtils.toLocalTime((Date)source);
+			} else if (source instanceof Calendar) {
+				return (T)DateUtils.toLocalTime(((Calendar)source).getTime());
+			} else if (source instanceof String) {
+				return (T)DateUtils.toLocalTime((String)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)((LocalDateTime)source).toLocalTime();
+			} else if (source instanceof Instant) {
+				return (T)DateUtils.toLocalTime((Instant)source);
+			}
+		} else if (targetClass == LocalDateTime.class) {
+			if (source instanceof Long) {
+				return (T)DateUtils.toLocalDateTime((Long)source);
+			} else if (source instanceof Date) {
+				return (T)DateUtils.toLocalDateTime((Date)source);
+			} else if (source instanceof Calendar) {
+				return (T)DateUtils.toLocalDateTime(((Calendar)source).getTime());
+			} else if (source instanceof String) {
+				return (T)DateUtils.toLocalDateTime((String)source);
+			} else if (source instanceof LocalDate) {
+				return (T)DateUtils.toLocalDateTime((LocalDate)source);
+			} else if (source instanceof Instant) {
+				return (T)DateUtils.toLocalDateTime((Instant)source);
+			}
+		} else if (targetClass == Instant.class) {
+			if (source instanceof Long) {
+				return (T)Instant.ofEpochMilli((Long)source);
+			} else if (source instanceof Date) {
+				return (T)((Date)source).toInstant();
+			} else if (source instanceof Calendar) {
+				return (T)((Calendar)source).getTime().toInstant();
+			} else if (source instanceof String) {
+				return (T)DateUtils.toInstant((String)source);
+			} else if (source instanceof LocalDate) {
+				return (T)DateUtils.toInstant((LocalDate)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)DateUtils.toInstant((LocalDateTime)source);
 			}
 		} else if (targetClass == String.class) {
 			if (source instanceof Date) {
 				return (T)DateUtils.toString((Date)source, getDateFormat());
+			} else if (source instanceof Calendar) {
+				return (T)DateUtils.toString(((Calendar)source).getTime(), getDateFormat());
+			} else if (source instanceof LocalTime) {
+				return (T)DateUtils.toTimeString((LocalTime)source);
+			} else if (source instanceof LocalDateTime) {
+				return (T)DateUtils.toString((LocalDateTime)source, getDateFormat());
+			} else if (source instanceof Instant) {
+				return (T)DateUtils.toString((Instant)source, getDateFormat());
 			} else if (source instanceof BigDecimal) {
 				Integer scale = getBigDecimalScale();
 				if (scale == null) {

@@ -5,12 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -50,7 +52,7 @@ public class RSAUtils {
 	 * @throws Exception
 	 */
 	private PrivateKey getPrivateKey(String privateKeyStr) throws Exception {
-		byte[] buffer = Base64.decode(privateKeyStr);
+		byte[] buffer = Base64.getDecoder().decode(privateKeyStr);
 		PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(buffer);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		return keyFactory.generatePrivate(keySpec);
@@ -65,7 +67,7 @@ public class RSAUtils {
 	 *             加载公钥时产生的异常
 	 */
 	private static PublicKey getPublicKey(String publicKeyStr) throws Exception {
-		byte[] buffer = Base64.decode(publicKeyStr);
+		byte[] buffer = Base64.getDecoder().decode(publicKeyStr);
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		X509EncodedKeySpec keySpec = new X509EncodedKeySpec(buffer);
 		return keyFactory.generatePublic(keySpec);
@@ -73,7 +75,7 @@ public class RSAUtils {
 	
 	private String getKeyString(String keyName) throws Exception {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream(keyName);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 		String temp = null;
 		StringBuffer sb = new StringBuffer();
 		while ((temp = br.readLine()) != null) {
@@ -210,14 +212,14 @@ public class RSAUtils {
 	
 	public String encryptString(String param) throws Exception {
 		if (param == null) return null;
-		byte[] encryptedByte = encryptData(param.getBytes("UTF-8"));
-		return Base64.encode(encryptedByte);
+		byte[] encryptedByte = encryptData(param.getBytes(StandardCharsets.UTF_8));
+		return Base64.getEncoder().encodeToString(encryptedByte);
 	}
 	
 	public String decryptString(String param) throws Exception {
 		if (param == null) return null;
-		byte[] decryptedByte = decryptData(Base64.decode(param));
-		return new String(decryptedByte, "UTF-8");
+		byte[] decryptedByte = decryptData(Base64.getDecoder().decode(param));
+		return new String(decryptedByte, StandardCharsets.UTF_8);
 	}
 	
 	@SuppressWarnings("unchecked")

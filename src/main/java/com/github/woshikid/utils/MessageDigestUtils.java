@@ -1,6 +1,6 @@
 package com.github.woshikid.utils;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
 /**
@@ -9,8 +9,6 @@ import java.security.MessageDigest;
  *
  */
 public class MessageDigestUtils {
-	
-	public static final Charset charset = Charset.forName("UTF-8");
 
 	private static String byte2Hex(byte[] bytes) {
 		if (bytes == null) return null;
@@ -60,12 +58,12 @@ public class MessageDigestUtils {
 
 	public static String md5(String message, int iterations) {
 		if (message == null) return null;
-		return md5(message.getBytes(charset), iterations);
+		return md5(message.getBytes(StandardCharsets.UTF_8), iterations);
 	}
 	
 	public static String md5(String message) {
 		if (message == null) return null;
-		return md5(message.getBytes(charset));
+		return md5(message.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	public static String sha1(byte[] bytes, int iterations) {
@@ -78,12 +76,12 @@ public class MessageDigestUtils {
 
 	public static String sha1(String message, int iterations) {
 		if (message == null) return null;
-		return sha1(message.getBytes(charset), iterations);
+		return sha1(message.getBytes(StandardCharsets.UTF_8), iterations);
 	}
 	
 	public static String sha1(String message) {
 		if (message == null) return null;
-		return sha1(message.getBytes(charset));
+		return sha1(message.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	public static String sha256(byte[] bytes, int iterations) {
@@ -96,12 +94,12 @@ public class MessageDigestUtils {
 
 	public static String sha256(String message, int iterations) {
 		if (message == null) return null;
-		return sha256(message.getBytes(charset), iterations);
+		return sha256(message.getBytes(StandardCharsets.UTF_8), iterations);
 	}
 	
 	public static String sha256(String message) {
 		if (message == null) return null;
-		return sha256(message.getBytes(charset));
+		return sha256(message.getBytes(StandardCharsets.UTF_8));
 	}
 	
 	public static String sha512(byte[] bytes, int iterations) {
@@ -114,12 +112,12 @@ public class MessageDigestUtils {
 
 	public static String sha512(String message, int iterations) {
 		if (message == null) return null;
-		return sha512(message.getBytes(charset), iterations);
+		return sha512(message.getBytes(StandardCharsets.UTF_8), iterations);
 	}
 	
 	public static String sha512(String message) {
 		if (message == null) return null;
-		return sha512(message.getBytes(charset));
+		return sha512(message.getBytes(StandardCharsets.UTF_8));
 	}
 	
 }

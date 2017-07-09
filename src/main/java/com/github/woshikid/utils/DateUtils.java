@@ -1,6 +1,12 @@
 package com.github.woshikid.utils;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,6 +19,7 @@ public class DateUtils {
 
 	//所有程序中统一规定的日期格式
 	public static final String DATE_FORMAT = "yyyy-MM-dd";
+	public static final String TIME_FORMAT = "HH:mm:ss";
 	public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public static final String FULLTIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmssSSS";
@@ -77,6 +84,29 @@ public class DateUtils {
 	}
 	
 	/**
+	 * 根据字符串内容自动判断日期格式
+	 * @param date
+	 * @return
+	 */
+	public static String getFormat(String date) {
+		if (date.contains(" ")) {
+			if (date.contains(".")) {
+				return FULLTIME_FORMAT;
+			} else {
+				return DATETIME_FORMAT;
+			}
+		} else {
+			if (date.contains("-")) {
+				return DATE_FORMAT;
+			} else if (date.contains(":")) {
+				return TIME_FORMAT;
+			} else {
+				return TIMESTAMP_FORMAT.substring(0, date.length());
+			}
+		}
+	}
+	
+	/**
 	 * 根据String时间得到Date类型的时间
 	 * @param date
 	 * @return
@@ -85,22 +115,8 @@ public class DateUtils {
 		if (date == null) return null;
 		date = date.trim();
 		
-		//根据字符串内容自动判断日期格式
-		SimpleDateFormat format;
-		if (date.indexOf("-") == -1) {
-			format = new SimpleDateFormat(TIMESTAMP_FORMAT.substring(0, date.length()));
-		} else {
-			if (date.indexOf(" ") == -1) {
-				format = new SimpleDateFormat(DATE_FORMAT);
-			} else{
-				if (date.indexOf(".") == -1) {
-					format = new SimpleDateFormat(DATETIME_FORMAT);
-				} else {
-					format = new SimpleDateFormat(FULLTIME_FORMAT);
-				}
-			}
-		}
-
+		SimpleDateFormat format = new SimpleDateFormat(getFormat(date));
+		
 		//设置宽容模式，本工具默认设置为关闭
 		//不合法的日期将抛出异常
 		boolean lenient = getLenient();
@@ -111,6 +127,24 @@ public class DateUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * 将LocalDate转换为Date
+	 * @param localDate
+	 * @return
+	 */
+	public static Date toDate(LocalDate localDate) {
+		return Date.from(toInstant(localDate));
+	}
+	
+	/**
+	 * 将LocalDateTime转换为Date
+	 * @param localDateTime
+	 * @return
+	 */
+	public static Date toDate(LocalDateTime localDateTime) {
+		return Date.from(toInstant(localDateTime));
 	}
 	
 	/**
@@ -145,6 +179,182 @@ public class DateUtils {
 	}
 	
 	/**
+	 * 根据LocalDate得到Calendar类型的时间
+	 * @param localDate
+	 * @return
+	 */
+	public static Calendar toCalendar(LocalDate localDate) {
+		return toCalendar(toDate(localDate));
+	}
+	
+	/**
+	 * 根据LocalDateTime得到Calendar类型的时间
+	 * @param localDateTime
+	 * @return
+	 */
+	public static Calendar toCalendar(LocalDateTime localDateTime) {
+		return toCalendar(toDate(localDateTime));
+	}
+	
+	/**
+	 * 根据Instant得到Calendar类型的时间
+	 * @param instant
+	 * @return
+	 */
+	public static Calendar toCalendar(Instant instant) {
+		return toCalendar(Date.from(instant));
+	}
+	
+	/**
+	 * 将毫秒时间戳转换为LocalDate
+	 * @param millis
+	 * @return
+	 */
+	public static LocalDate toLocalDate(long millis) {
+		return toLocalDate(Instant.ofEpochMilli(millis));
+	}
+	
+	/**
+	 * 将Date转换为LocalDate
+	 * @param date
+	 * @return
+	 */
+	public static LocalDate toLocalDate(Date date) {
+		return toLocalDate(date.toInstant());
+	}
+	
+	/**
+	 * 根据String时间得到LocalDate
+	 * @param date
+	 * @return
+	 */
+	public static LocalDate toLocalDate(String date) {
+		return LocalDate.parse(date, DateTimeFormatter.ofPattern(getFormat(date)));
+	}
+	
+	/**
+	 * 将Instant转换为LocalDate
+	 * @param instant
+	 * @return
+	 */
+	public static LocalDate toLocalDate(Instant instant) {
+		return toLocalDateTime(instant).toLocalDate();
+	}
+	
+	/**
+	 * 将毫秒时间戳转换为LocalTime
+	 * @param millis
+	 * @return
+	 */
+	public static LocalTime toLocalTime(long millis) {
+		return toLocalTime(Instant.ofEpochMilli(millis));
+	}
+	
+	/**
+	 * 将Date转换为LocalTime
+	 * @param date
+	 * @return
+	 */
+	public static LocalTime toLocalTime(Date date) {
+		return toLocalDateTime(date).toLocalTime();
+	}
+	
+	/**
+	 * 根据String时间得到LocalTime
+	 * @param date
+	 * @return
+	 */
+	public static LocalTime toLocalTime(String date) {
+		String format = getFormat(date);
+		if (format.equals(TIME_FORMAT)) {
+			return LocalTime.parse(date);
+		} else {
+			return toLocalDateTime(date).toLocalTime();
+		}
+	}
+	
+	/**
+	 * 将Instant转换为LocalTime
+	 * @param instant
+	 * @return
+	 */
+	public static LocalTime toLocalTime(Instant instant) {
+		return toLocalDateTime(instant).toLocalTime();
+	}
+	
+	/**
+	 * 将毫秒时间戳转换为LocalDateTime
+	 * @param millis
+	 * @return
+	 */
+	public static LocalDateTime toLocalDateTime(long millis) {
+		return toLocalDateTime(Instant.ofEpochMilli(millis));
+	}
+	
+	/**
+	 * 将Date转换为LocalDateTime
+	 * @param date
+	 * @return
+	 */
+	public static LocalDateTime toLocalDateTime(Date date) {
+		return toLocalDateTime(date.toInstant());
+	}
+	
+	/**
+	 * 根据String时间得到LocalDateTime
+	 * @param date
+	 * @return
+	 */
+	public static LocalDateTime toLocalDateTime(String date) {
+		return LocalDateTime.parse(date, DateTimeFormatter.ofPattern(getFormat(date)));
+	}
+	
+	/**
+	 * 将LocalDate转换为当天凌晨的LocalDateTime
+	 * @param localDate
+	 * @return
+	 */
+	public static LocalDateTime toLocalDateTime(LocalDate localDate) {
+		return LocalDateTime.of(localDate, LocalTime.MIN);
+	}
+	
+	/**
+	 * 将instant转换为LocalDateTime
+	 * @param instant
+	 * @return
+	 */
+	public static LocalDateTime toLocalDateTime(Instant instant) {
+		return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+	}
+	
+	/**
+	 * 根据String时间得到Instant
+	 * @param date
+	 * @return
+	 */
+	public static Instant toInstant(String date) {
+		return toInstant(toLocalDateTime(date));
+	}
+	
+	/**
+	 * 将LocalDate转换为当天凌晨的Instant
+	 * @param localDate
+	 * @return
+	 */
+	public static Instant toInstant(LocalDate localDate) {
+		return toInstant(toLocalDateTime(localDate));
+	}
+	
+	/**
+	 * 将LocalDateTime转换为Instant
+	 * @param localDateTime
+	 * @return
+	 */
+	public static Instant toInstant(LocalDateTime localDateTime) {
+		return localDateTime.atZone(ZoneId.systemDefault()).toInstant();
+	}
+	
+	/**
 	 * 根据给定的格式格式化日期
 	 * @param date
 	 * @param format 指定的日期格式
@@ -153,6 +363,50 @@ public class DateUtils {
 	public static String toString(Date date, String format) {
 		if (date == null) return null;
 		return new SimpleDateFormat(format).format(date);
+	}
+	
+	/**
+	 * 根据给定的格式格式化日期
+	 * @param localDate
+	 * @param format
+	 * @return
+	 */
+	public static String toString(LocalDate localDate, String format) {
+		if (localDate == null) return null;
+		return localDate.format(DateTimeFormatter.ofPattern(format));
+	}
+	
+	/**
+	 * 根据给定的格式格式化日期
+	 * @param localTime
+	 * @param format
+	 * @return
+	 */
+	public static String toString(LocalTime localTime, String format) {
+		if (localTime == null) return null;
+		return localTime.format(DateTimeFormatter.ofPattern(format));
+	}
+	
+	/**
+	 * 根据给定的格式格式化日期
+	 * @param localDateTime
+	 * @param format
+	 * @return
+	 */
+	public static String toString(LocalDateTime localDateTime, String format) {
+		if (localDateTime == null) return null;
+		return localDateTime.format(DateTimeFormatter.ofPattern(format));
+	}
+	
+	/**
+	 * 根据给定的格式格式化日期
+	 * @param instant
+	 * @param format
+	 * @return
+	 */
+	public static String toString(Instant instant, String format) {
+		if (instant == null) return null;
+		return toString(toLocalDateTime(instant), format);
 	}
 	
 	/**
@@ -165,12 +419,84 @@ public class DateUtils {
 	}
 	
 	/**
+	 * 将LocalDateTime格式化为纯日期格式
+	 * @param localDateTime
+	 * @return
+	 */
+	public static String toDateString(LocalDateTime localDateTime) {
+		return toString(localDateTime, DATE_FORMAT);
+	}
+	
+	/**
+	 * 将Instant格式化为纯日期格式
+	 * @param instant
+	 * @return
+	 */
+	public static String toDateString(Instant instant) {
+		return toDateString(toLocalDateTime(instant));
+	}
+	
+	/**
+	 * 将日期格式化为时间格式
+	 * @param date
+	 * @return
+	 */
+	public static String toTimeString(Date date) {
+		return toString(date, TIME_FORMAT);
+	}
+	
+	/**
+	 * 将LocalTime格式化为时间格式
+	 * @param localTime
+	 * @return
+	 */
+	public static String toTimeString(LocalTime localTime) {
+		return localTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT));
+	}
+	
+	/**
+	 * 将LocalDateTime格式化为时间格式
+	 * @param localDateTime
+	 * @return
+	 */
+	public static String toTimeString(LocalDateTime localDateTime) {
+		return toTimeString(localDateTime.toLocalTime());
+	}
+	
+	/**
+	 * 将Instant格式化为时间格式
+	 * @param instant
+	 * @return
+	 */
+	public static String toTimeString(Instant instant) {
+		return toTimeString(toLocalTime(instant));
+	}
+	
+	/**
 	 * 将日期格式化为日期与时间格式
 	 * @param date
 	 * @return
 	 */
 	public static String toDateTimeString(Date date) {
 		return toString(date, DATETIME_FORMAT);
+	}
+	
+	/**
+	 * 将LocalDateTime格式化为日期与时间格式
+	 * @param localDateTime
+	 * @return
+	 */
+	public static String toDateTimeString(LocalDateTime localDateTime) {
+		return toString(localDateTime, DATETIME_FORMAT);
+	}
+	
+	/**
+	 * 将Instant格式化为日期与时间格式
+	 * @param instant
+	 * @return
+	 */
+	public static String toDateTimeString(Instant instant) {
+		return toDateTimeString(toLocalDateTime(instant));
 	}
 	
 	/**
@@ -181,6 +507,24 @@ public class DateUtils {
 	public static String toFullTimeString(Date date) {
 		return toString(date, FULLTIME_FORMAT);
 	}
+	
+	/**
+	 * 将LocalDateTime格式化为带毫秒的日期格式
+	 * @param localDateTime
+	 * @return
+	 */
+	public static String toFullTimeString(LocalDateTime localDateTime) {
+		return toString(localDateTime, FULLTIME_FORMAT);
+	}
+	
+	/**
+	 * 将Instant格式化为带毫秒的日期格式
+	 * @param instant
+	 * @return
+	 */
+	public static String toFullTimeString(Instant instant) {
+		return toFullTimeString(toLocalDateTime(instant));
+	}
 
 	/**
 	 * 将日期格式化为时间戳
@@ -189,6 +533,24 @@ public class DateUtils {
 	 */
 	public static String toTimestampString(Date date) {
 		return toString(date, TIMESTAMP_FORMAT);
+	}
+	
+	/**
+	 * 将LocalDateTime格式化为时间戳
+	 * @param localDateTime
+	 * @return
+	 */
+	public static String toTimestampString(LocalDateTime localDateTime) {
+		return toString(localDateTime, TIMESTAMP_FORMAT);
+	}
+	
+	/**
+	 * 将Instant格式化为时间戳
+	 * @param instant
+	 * @return
+	 */
+	public static String toTimestampString(Instant instant) {
+		return toTimestampString(toLocalDateTime(instant));
 	}
 	
 	/**

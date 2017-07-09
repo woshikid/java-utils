@@ -6,7 +6,6 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -33,14 +32,6 @@ public class HttpsHelper {
 		return context;
 	}
 	
-	private static HostnameVerifier getHostnameVerifier() {
-		return new HostnameVerifier() {
-			public boolean verify(String hostname, SSLSession session) {
-				return true;
-			}
-		};
-	}
-	
 	public static void disableTrustManager(HttpsURLConnection connection) {
 		try {
 			SSLContext context = getSSLContext();
@@ -51,8 +42,7 @@ public class HttpsHelper {
 	}
 	
 	public static void disableHostnameVerifier(HttpsURLConnection connection) {
-		HostnameVerifier verifier = getHostnameVerifier();
-		connection.setHostnameVerifier(verifier);
+		connection.setHostnameVerifier((h, s) -> true);
 	}
 	
 	public static void disableTrustManager() {
@@ -78,8 +68,7 @@ public class HttpsHelper {
 			if (defaultHostnameVerifier != null) return;
 			defaultHostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
 			
-			HostnameVerifier verifier = getHostnameVerifier();
-			HttpsURLConnection.setDefaultHostnameVerifier(verifier);
+			HttpsURLConnection.setDefaultHostnameVerifier((h, s) -> true);
 		}
 	}
 	

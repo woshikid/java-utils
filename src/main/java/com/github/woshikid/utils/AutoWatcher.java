@@ -1,5 +1,7 @@
 package com.github.woshikid.utils;
 
+import java.util.concurrent.TimeUnit;
+
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
@@ -30,7 +32,7 @@ public abstract class AutoWatcher implements Watcher, InitializingBean {
 			if (zk.getState().equals(States.CONNECTED)) break;
 			
 			try {
-				Thread.sleep(1000);
+				TimeUnit.SECONDS.sleep(1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

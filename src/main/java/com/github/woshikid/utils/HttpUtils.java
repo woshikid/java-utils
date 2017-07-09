@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -81,11 +82,11 @@ public class HttpUtils {
 		 * @return
 		 * @throws IOException
 		 */
-		public String getTextIgnoreError() throws IOException {
+		public String getTextIgnoreError() {
 			if (charset != null) {
 				return new String(data, charset);
 			} else {
-				return new String(data, "UTF-8");
+				return new String(data, StandardCharsets.UTF_8);
 			}
 		}
 	}

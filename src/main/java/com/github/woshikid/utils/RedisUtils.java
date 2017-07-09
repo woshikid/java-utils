@@ -2,7 +2,7 @@ package com.github.woshikid.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,8 +82,6 @@ import redis.clients.util.JedisClusterCRC16;
  */
 public class RedisUtils {
 
-	private static Charset utf8 = Charset.forName("UTF-8");
-	
 	private static JedisCluster jedisCluster = null;
 	
 	private static JedisSentinelPool jedisSentinelPool = null;
@@ -211,13 +209,13 @@ public class RedisUtils {
 		if (object == null) return null;
 		
 		if (object instanceof String) {
-			return ((String)object).getBytes(utf8);
+			return ((String)object).getBytes(StandardCharsets.UTF_8);
 		} else if (object instanceof byte[]) {
 			return (byte[])object;
 		} else if (object instanceof Boolean) {
-			return object.toString().getBytes(utf8);
+			return object.toString().getBytes(StandardCharsets.UTF_8);
 		} else if (object instanceof Number) {
-			return object.toString().getBytes(utf8);
+			return object.toString().getBytes(StandardCharsets.UTF_8);
 		} else {
 			return ObjectUtils.serialize(object);
 		}
@@ -275,7 +273,7 @@ public class RedisUtils {
 	 */
 	private static String toString(byte[] bytes) {
 		if (bytes == null) return null;
-		return new String(bytes, utf8);
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 	
 	/**

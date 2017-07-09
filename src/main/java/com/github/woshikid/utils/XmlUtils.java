@@ -64,7 +64,7 @@ public class XmlUtils {
 	 * @XmlAccessorType(XmlAccessType.FIELD)
 	 * @XmlElementWrapper(name="Servers")
 	 * @XmlElement(name="Server")
-	 * @XmlJavaTypeAdapter(JaxbDateAdapter.class)
+	 * @XmlJavaTypeAdapter(DateAdapter.class)
 	 * @return
 	 */
 	public static String toXml(Object object, String encoding, boolean fragment) {
