@@ -89,12 +89,10 @@ public class RedisUtils {
 	private static JedisPool jedisPool = null;
 	
 	static {
-		InputStream in = RedisUtils.class.getResourceAsStream("/redis.properties");
 		Properties config = new Properties();
 		
-		try {
+		try (InputStream in = RedisUtils.class.getResourceAsStream("/redis.properties")) {
 			config.load(in);
-			in.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -493,13 +491,10 @@ public class RedisUtils {
 	 * @return 网络延时(纳秒)
 	 */
 	public static long ping() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			long now = System.nanoTime();
 			jedis.ping();
 			return System.nanoTime() - now;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -510,11 +505,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<String> time() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.time();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -523,11 +515,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long dbSize() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.dbSize();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -536,11 +525,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long lastsave() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lastsave();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -548,11 +534,8 @@ public class RedisUtils {
 	 * 启动异步aof文件重写任务
 	 */
 	public static void bgrewriteaof() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.bgrewriteaof();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -560,11 +543,8 @@ public class RedisUtils {
 	 * 启动异步文件备份任务
 	 */
 	public static void bgsave() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.bgsave();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -574,11 +554,8 @@ public class RedisUtils {
 	 * @return 成功返回true，key不存在返回false
 	 */
 	public static boolean del(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.del(toBytes(key)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -588,11 +565,8 @@ public class RedisUtils {
 	 * @return 被实际删除的key个数
 	 */
 	public static long del(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.del(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -602,11 +576,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean exists(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.exists(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -617,11 +588,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long exists(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.exists(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -637,11 +605,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean expire(Object key, int seconds) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.expire(toBytes(key), seconds) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -653,11 +618,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean expireAt(Object key, long unixTime) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.expireAt(toBytes(key), unixTime) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -668,11 +630,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean pexpire(Object key, long milliseconds) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pexpire(toBytes(key), milliseconds) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -683,11 +642,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean pexpireAt(Object key, long millisecondsTimestamp) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pexpireAt(toBytes(key), millisecondsTimestamp) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -698,11 +654,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long ttl(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.ttl(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -712,11 +665,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long pttl(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pttl(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -726,11 +676,8 @@ public class RedisUtils {
 	 * @return 取消过期时间成功与否(不存在或原来没有过期)
 	 */
 	public static boolean persist(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.persist(toBytes(key)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -742,11 +689,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Long idle(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.objectIdletime(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -758,11 +702,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static String type(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.type(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -775,11 +716,8 @@ public class RedisUtils {
 	 * @return 是否转移成功
 	 */
 	public static boolean move(Object key, int dbIndex) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.move(toBytes(key), dbIndex) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -791,11 +729,8 @@ public class RedisUtils {
 	 * @param newkey
 	 */
 	public static void rename(Object oldkey, Object newkey) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.rename(toBytes(oldkey), toBytes(newkey));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -808,11 +743,8 @@ public class RedisUtils {
 	 * @return 是否更名成功
 	 */
 	public static boolean renamenx(Object oldkey, Object newkey) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.renamenx(toBytes(oldkey), toBytes(newkey)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -823,11 +755,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] dump(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.dump(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -838,11 +767,8 @@ public class RedisUtils {
 	 * @param serializedValue
 	 */
 	public static void restore(Object key, int ttl, byte[] serializedValue) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.restore(toBytes(key), ttl, serializedValue);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -852,11 +778,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] randomKeyBytes() {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.randomBinaryKey();
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -875,11 +798,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> keysBytes(String pattern) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.keys(toBytes(pattern));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -899,11 +819,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<byte[]> scanBytes(String cursor) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.scan(toBytes(cursor));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -928,11 +845,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<byte[]> scanBytes(String cursor, String match, Integer count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.scan(toBytes(cursor), toScanParams(match, count));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -957,11 +871,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> sortBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sort(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -986,11 +897,8 @@ public class RedisUtils {
 	 * @return 插入的元素数量
 	 */
 	public static long sort(Object key, Object dstkey) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sort(toBytes(key), toBytes(dstkey));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1006,11 +914,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> sortBytes(Object key, String by, String ascdesc, String alpha, Integer offset, Integer count, String... get) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sort(toBytes(key), toSortingParams(by, ascdesc, alpha, offset, count, get));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1043,11 +948,8 @@ public class RedisUtils {
 	 * @return 插入的元素数量
 	 */
 	public static long sort(Object key, Object dstkey, String by, String ascdesc, String alpha, Integer offset, Integer count, String... get) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sort(toBytes(key), toSortingParams(by, ascdesc, alpha, offset, count, get), toBytes(dstkey));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1061,11 +963,8 @@ public class RedisUtils {
 	 * @return 操作结果
 	 */
 	public static boolean set(Object key, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.set(toBytes(key), toBytes(value)) != null;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1078,11 +977,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean set(Object key, Object value, String nxxx) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.set(toBytes(key), toBytes(value), toBytes(nxxx)) != null;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1096,11 +992,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean set(Object key, Object value, String nxxx, String expx, long time) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.set(toBytes(key), toBytes(value), toBytes(nxxx), toBytes(expx), time) != null;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1110,11 +1003,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] getBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.get(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1132,11 +1022,8 @@ public class RedisUtils {
 	 * @param keysvalues
 	 */
 	public static void mset(Object... keysvalues) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.mset(toBytes(keysvalues));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1148,11 +1035,8 @@ public class RedisUtils {
 	 * @return 是否进行了set操作
 	 */
 	public static boolean msetnx(Object... keysvalues) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.msetnx(toBytes(keysvalues)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1162,11 +1046,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> mgetBytes(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.mget(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1187,11 +1068,8 @@ public class RedisUtils {
 	 * @return 是否设置成功
 	 */
 	public static boolean setnx(Object key, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.setnx(toBytes(key), toBytes(value)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1202,11 +1080,8 @@ public class RedisUtils {
 	 * @param value
 	 */
 	public static void setex(Object key, int seconds, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.setex(toBytes(key), seconds, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1217,11 +1092,8 @@ public class RedisUtils {
 	 * @param value
 	 */
 	public static void psetex(Object key, long milliseconds, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.psetex(toBytes(key), milliseconds, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1233,11 +1105,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] getSetBytes(Object key, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.getSet(toBytes(key), toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1261,11 +1130,8 @@ public class RedisUtils {
 	 * @return 返回减少后的新值
 	 */
 	public static long decrBy(Object key, long integer) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.decrBy(toBytes(key), integer);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1277,11 +1143,8 @@ public class RedisUtils {
 	 * @return 返回减少后的新值
 	 */
 	public static long decr(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.decr(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1294,11 +1157,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新值
 	 */
 	public static long incrBy(Object key, long integer) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.incrBy(toBytes(key), integer);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1311,11 +1171,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新值
 	 */
 	public static double incrByFloat(Object key, double value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.incrByFloat(toBytes(key), value);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1327,11 +1184,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新值
 	 */
 	public static long incr(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.incr(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1343,11 +1197,8 @@ public class RedisUtils {
 	 * @return 新string的长度
 	 */
 	public static long append(Object key, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.append(toBytes(key), toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1358,11 +1209,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long strlen(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.strlen(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1376,11 +1224,8 @@ public class RedisUtils {
 	 * @return 新string的长度
 	 */
 	public static long setrange(Object key, long offset, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.setrange(toBytes(key), offset, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1393,11 +1238,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] getrangeBytes(Object key, long startOffset, long endOffset) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.getrange(toBytes(key), startOffset, endOffset);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1419,11 +1261,8 @@ public class RedisUtils {
 	 */
 	@Deprecated
 	public static byte[] substrBytes(Object key, int start, int end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.substr(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1450,11 +1289,8 @@ public class RedisUtils {
 	 * @return 原来位置的bit值，如果是1，则返回true，否则返回false
 	 */
 	public static boolean setbit(Object key, long offset, boolean value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.setbit(toBytes(key), offset, value);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1466,11 +1302,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean setbit(Object key, long offset, String value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.setbit(toBytes(key), offset, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1483,11 +1316,8 @@ public class RedisUtils {
 	 * @return true代表1，false代表0
 	 */
 	public static boolean getbit(Object key, long offset) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.getbit(toBytes(key), offset);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1498,11 +1328,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long bitcount(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.bitcount(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1515,11 +1342,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long bitcount(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.bitcount(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1533,11 +1357,8 @@ public class RedisUtils {
 	 * @return 结果字符串的长度
 	 */
 	public static long bitop(String bitop, Object destKey, Object... srcKeys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.bitop(toBitOP(bitop), toBytes(destKey), toBytes(srcKeys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1550,11 +1371,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long bitpos(Object key, boolean value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.bitpos(toBytes(key), value);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1571,11 +1389,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long bitpos(Object key, boolean value, long start, Long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.bitpos(toBytes(key), value, toBitPosParams(start, end));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1591,11 +1406,8 @@ public class RedisUtils {
 	 * @return 新增为true，更新为false
 	 */
 	public static boolean hset(Object key, Object field, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hset(toBytes(key), toBytes(field), toBytes(value)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1607,11 +1419,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] hgetBytes(Object key, Object field) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hget(toBytes(key), toBytes(field));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1636,11 +1445,8 @@ public class RedisUtils {
 	 * @return 是否设置成功
 	 */
 	public static boolean hsetnx(Object key, Object field, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hsetnx(toBytes(key), toBytes(field), toBytes(value)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1651,11 +1457,8 @@ public class RedisUtils {
 	 * @param hash
 	 */
 	public static void hmset(Object key, Map<?, ?> hash) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.hmset(toBytes(key), toBytes(hash));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1668,11 +1471,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> hmgetBytes(Object key, Object... fields) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hmget(toBytes(key), toBytes(fields));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1698,11 +1498,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新值
 	 */
 	public static long hincrBy(Object key, Object field, long value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hincrBy(toBytes(key), toBytes(field), value);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1716,11 +1513,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新值
 	 */
 	public static double hincrByFloat(Object key, Object field, double value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hincrByFloat(toBytes(key), toBytes(field), value);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1731,11 +1525,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean hexists(Object key, Object field) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hexists(toBytes(key), toBytes(field));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1746,11 +1537,8 @@ public class RedisUtils {
 	 * @return 实际被删除的field数量
 	 */
 	public static long hdel(Object key, Object... fields) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hdel(toBytes(key), toBytes(fields));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1761,11 +1549,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long hlen(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hlen(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1775,11 +1560,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> hkeysBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hkeys(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1798,11 +1580,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> hvalsBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hvals(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1821,11 +1600,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Map<byte[], byte[]> hgetAllBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hgetAll(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1844,11 +1620,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<Map.Entry<byte[], byte[]>> hscanBytes(Object key, String cursor) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hscan(toBytes(key), toBytes(cursor));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1874,11 +1647,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<Map.Entry<byte[], byte[]>> hscanBytes(Object key, String cursor, String match, Integer count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.hscan(toBytes(key), toBytes(cursor), toScanParams(match, count));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1909,11 +1679,8 @@ public class RedisUtils {
 	 * @return 插入后list的长度
 	 */
 	public static long rpush(Object key, Object... values) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.rpush(toBytes(key), toBytes(values));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1927,11 +1694,8 @@ public class RedisUtils {
 	 * @return 插入后list的长度
 	 */
 	public static long lpush(Object key, Object... values) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lpush(toBytes(key), toBytes(values));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1942,11 +1706,8 @@ public class RedisUtils {
 	 * @return 插入后list的长度
 	 */
 	public static long rpushx(Object key, Object... values) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.rpushx(toBytes(key), toBytes(values));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1958,11 +1719,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long lpushx(Object key, Object... values) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lpushx(toBytes(key), toBytes(values));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1972,11 +1730,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long llen(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.llen(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -1989,11 +1744,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> lrangeBytes(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lrange(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2021,11 +1773,8 @@ public class RedisUtils {
 	 * @param end
 	 */
 	public static void ltrim(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.ltrim(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2038,11 +1787,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] lindexBytes(Object key, long index) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lindex(toBytes(key), index);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2067,11 +1813,8 @@ public class RedisUtils {
 	 * @param value
 	 */
 	public static void lset(Object key, long index, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.lset(toBytes(key), index, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2088,11 +1831,8 @@ public class RedisUtils {
 	 * 如果-1则表示元素没找到
 	 */
 	public static long linsert(Object key, String where, Object pivot, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.linsert(toBytes(key), toListPosition(where), toBytes(pivot), toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2108,11 +1848,8 @@ public class RedisUtils {
 	 * @return 实际删除的元素数量
 	 */
 	public static long lrem(Object key, long count, Object value) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lrem(toBytes(key), count, toBytes(value));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2124,11 +1861,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] lpopBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.lpop(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2151,11 +1885,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] rpopBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.rpop(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2177,11 +1908,8 @@ public class RedisUtils {
 	 * @return 被转移的元素
 	 */
 	public static byte[] rpoplpushBytes(Object srckey, Object dstkey) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.rpoplpush(toBytes(srckey), toBytes(dstkey));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2205,11 +1933,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> blpopBytes(int timeout, Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.blpop(timeout, toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2240,11 +1965,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> brpopBytes(int timeout, Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.brpop(timeout, toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2277,11 +1999,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] brpoplpushBytes(Object source, Object destination, int timeout) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.brpoplpush(toBytes(source), toBytes(destination), timeout);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2310,11 +2029,8 @@ public class RedisUtils {
 	 * @return 实际加入set的元素个数
 	 */
 	public static long sadd(Object key, Object... members) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sadd(toBytes(key), toBytes(members));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2328,11 +2044,8 @@ public class RedisUtils {
 	 * @return 转移是否成功
 	 */
 	public static boolean smove(Object srckey, Object dstkey, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.smove(toBytes(srckey), toBytes(dstkey), toBytes(member)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2344,11 +2057,8 @@ public class RedisUtils {
 	 * @return 实际被删除的元素数量
 	 */
 	public static long srem(Object key, Object... members) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.srem(toBytes(key), toBytes(members));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2358,11 +2068,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] spopBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.spop(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2383,11 +2090,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> spopBytes(Object key, long count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.spop(toBytes(key), count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2410,11 +2114,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long scard(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.scard(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2424,11 +2125,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> sdiffBytes(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sdiff(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2449,11 +2147,8 @@ public class RedisUtils {
 	 * @return 新集合元素的数量
 	 */
 	public static long sdiffstore(Object dstkey, Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sdiffstore(toBytes(dstkey), toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2463,11 +2158,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> sinterBytes(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sinter(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2488,11 +2180,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long sinterstore(Object dstkey, Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sinterstore(toBytes(dstkey), toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2502,11 +2191,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> sunionBytes(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sunion(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2527,11 +2213,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long sunionstore(Object dstkey, Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sunionstore(toBytes(dstkey), toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2542,11 +2225,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static boolean sismember(Object key, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sismember(toBytes(key), toBytes(member));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2556,11 +2236,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static byte[] srandmemberBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.srandmember(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2581,11 +2258,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static List<byte[]> srandmemberBytes(Object key, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.srandmember(toBytes(key), count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2607,11 +2281,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> smembersBytes(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.smembers(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2630,11 +2301,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<byte[]> sscanBytes(Object key, String cursor) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sscan(toBytes(key), toBytes(cursor));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2660,11 +2328,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<byte[]> sscanBytes(Object key, String cursor, String match, Integer count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.sscan(toBytes(key), toBytes(cursor), toScanParams(match, count));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2698,11 +2363,8 @@ public class RedisUtils {
 	 * @return 是否插入成功
 	 */
 	public static boolean zadd(Object key, double score, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zadd(toBytes(key), score, toBytes(member)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2720,11 +2382,8 @@ public class RedisUtils {
 	 * @return 是否插入成功
 	 */
 	public static boolean zadd(Object key, double score, Object member, String nxxx, String ch) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zadd(toBytes(key), score, toBytes(member), toZAddParams(nxxx, ch)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2739,11 +2398,8 @@ public class RedisUtils {
 	 * @return 实际添加的元素数量
 	 */
 	public static long zadd(Object key, Map<?, Double> scoreMembers) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zadd(toBytes(key), toBytesZ(scoreMembers));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2760,11 +2416,8 @@ public class RedisUtils {
 	 * @return 实际添加的元素数量
 	 */
 	public static long zadd(Object key, Map<?, Double> scoreMembers, String nxxx, String ch) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zadd(toBytes(key), toBytesZ(scoreMembers), toZAddParams(nxxx, ch));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2778,11 +2431,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新分数
 	 */
 	public static double zincrby(Object key, double score, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zincrby(toBytes(key), score, toBytes(member));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2797,11 +2447,8 @@ public class RedisUtils {
 	 * @return 返回增加后的新分数，如果不符合新增或更新条件，则返回null
 	 */
 	public static Double zincrby(Object key, double score, Object member, String nxxx) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zincrby(toBytes(key), score, toBytes(member), toZIncrByParams(nxxx));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2812,11 +2459,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long zcard(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zcard(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2828,11 +2472,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long zcount(Object key, double min, double max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zcount(toBytes(key), min, max);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2844,11 +2485,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long zcount(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zcount(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2861,11 +2499,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long zlexcount(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zlexcount(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2877,11 +2512,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Double zscore(Object key, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zscore(toBytes(key), toBytes(member));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2896,11 +2528,8 @@ public class RedisUtils {
 	 * @return 排名或null
 	 */
 	public static Long zrank(Object key, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrank(toBytes(key), toBytes(member));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2912,11 +2541,8 @@ public class RedisUtils {
 	 * @return 排名或null
 	 */
 	public static Long zrevrank(Object key, Object member) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrank(toBytes(key), toBytes(member));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2928,11 +2554,8 @@ public class RedisUtils {
 	 * @return 实际被删除的元素数量
 	 */
 	public static long zrem(Object key, Object... members) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrem(toBytes(key), toBytes(members));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2947,11 +2570,8 @@ public class RedisUtils {
 	 * @return 实际被删除的元素数量
 	 */
 	public static long zremrangeByRank(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zremrangeByRank(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2964,11 +2584,8 @@ public class RedisUtils {
 	 * @return 实际被删除的元素数量
 	 */
 	public static long zremrangeByLex(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zremrangeByLex(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2980,11 +2597,8 @@ public class RedisUtils {
 	 * @return 实际被删除的元素数量
 	 */
 	public static long zremrangeByScore(Object key, double min, double max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zremrangeByScore(toBytes(key), min, max);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -2996,11 +2610,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long zremrangeByScore(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zremrangeByScore(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3012,11 +2623,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeBytes(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrange(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3042,11 +2650,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeBytes(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrange(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3073,11 +2678,8 @@ public class RedisUtils {
 	 * @return 元素与分数的集合
 	 */
 	public static Set<Tuple> zrangeWithScores(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeWithScores(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3090,11 +2692,8 @@ public class RedisUtils {
 	 * @return 元素与分数的集合
 	 */
 	public static Set<Tuple> zrevrangeWithScores(Object key, long start, long end) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeWithScores(toBytes(key), start, end);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3106,11 +2705,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByLexBytes(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByLex(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3136,11 +2732,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByLexBytes(Object key, String min, String max, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByLex(toBytes(key), toBytes(min), toBytes(max), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3166,11 +2759,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByLexBytes(Object key, String max, String min) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByLex(toBytes(key), toBytes(max), toBytes(min));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3196,11 +2786,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByLexBytes(Object key, String max, String min, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByLex(toBytes(key), toBytes(max), toBytes(min), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3226,11 +2813,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByScoreBytes(Object key, double min, double max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScore(toBytes(key), min, max);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3255,11 +2839,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByScoreBytes(Object key, double min, double max, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScore(toBytes(key), min, max, offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3284,11 +2865,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByScoreBytes(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScore(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3313,11 +2891,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrangeByScoreBytes(Object key, String min, String max, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScore(toBytes(key), toBytes(min), toBytes(max), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3342,11 +2917,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByScoreBytes(Object key, double max, double min) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScore(toBytes(key), max, min);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3371,11 +2943,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByScoreBytes(Object key, double max, double min, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScore(toBytes(key), max, min, offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3400,11 +2969,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByScoreBytes(Object key, String max, String min) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScore(toBytes(key), toBytes(max), toBytes(min));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3429,11 +2995,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<byte[]> zrevrangeByScoreBytes(Object key, String max, String min, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScore(toBytes(key), toBytes(max), toBytes(min), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3458,11 +3021,8 @@ public class RedisUtils {
 	 * @return 元素与分数的集合
 	 */
 	public static Set<Tuple> zrangeByScoreWithScores(Object key, double min, double max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScoreWithScores(toBytes(key), min, max);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3476,11 +3036,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrangeByScoreWithScores(Object key, double min, double max, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScoreWithScores(toBytes(key), min, max, offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3492,11 +3049,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrangeByScoreWithScores(Object key, String min, String max) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScoreWithScores(toBytes(key), toBytes(min), toBytes(max));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3510,11 +3064,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrangeByScoreWithScores(Object key, String min, String max, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrangeByScoreWithScores(toBytes(key), toBytes(min), toBytes(max), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3526,11 +3077,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrevrangeByScoreWithScores(Object key, double max, double min) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScoreWithScores(toBytes(key), max, min);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3544,11 +3092,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrevrangeByScoreWithScores(Object key, double max, double min, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScoreWithScores(toBytes(key), max, min, offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3560,11 +3105,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrevrangeByScoreWithScores(Object key, String max, String min) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScoreWithScores(toBytes(key), toBytes(max), toBytes(min));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3578,11 +3120,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static Set<Tuple> zrevrangeByScoreWithScores(Object key, String max, String min, int offset, int count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zrevrangeByScoreWithScores(toBytes(key), toBytes(max), toBytes(min), offset, count);
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3595,11 +3134,8 @@ public class RedisUtils {
 	 * @return 新集合的元素个数
 	 */
 	public static long zinterstore(Object dstkey, Object... sets) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zinterstore(toBytes(dstkey), toBytes(sets));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3614,11 +3150,8 @@ public class RedisUtils {
 	 * @return 新集合的元素个数
 	 */
 	public static long zinterstore(Object dstkey, double[] weights, String aggregate, Object... sets) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zinterstore(toBytes(dstkey), toZParams(weights, aggregate), toBytes(sets));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3631,11 +3164,8 @@ public class RedisUtils {
 	 * @return 新集合的元素个数
 	 */
 	public static long zunionstore(Object dstkey, Object... sets) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zunionstore(toBytes(dstkey), toBytes(sets));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3650,11 +3180,8 @@ public class RedisUtils {
 	 * @return 新集合的元素个数
 	 */
 	public static long zunionstore(Object dstkey, double[] weights, String aggregate, Object... sets) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zunionstore(toBytes(dstkey), toZParams(weights, aggregate), toBytes(sets));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3669,11 +3196,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<Tuple> zscan(Object key, String cursor) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zscan(toBytes(key), toBytes(cursor));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3690,11 +3214,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static ScanResult<Tuple> zscan(Object key, String cursor, String match, Integer count) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.zscan(toBytes(key), toBytes(cursor), toScanParams(match, count));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3706,11 +3227,8 @@ public class RedisUtils {
 	 * @return 统计数量是否有变化
 	 */
 	public static boolean pfadd(Object key, Object... elements) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pfadd(toBytes(key), toBytes(elements)) == 1L;
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3721,11 +3239,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long pfcount(Object key) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pfcount(toBytes(key));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3736,11 +3251,8 @@ public class RedisUtils {
 	 * @return
 	 */
 	public static long pfcount(Object... keys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			return jedis.pfcount(toBytes(keys));
-		} finally {
-			jedis.close();
 		}
 	}
 	
@@ -3750,11 +3262,8 @@ public class RedisUtils {
 	 * @param sourcekeys
 	 */
 	public static void pfmerge(Object destkey, Object... sourcekeys) {
-		Jedis jedis = getJedis();
-		try {
+		try (Jedis jedis = getJedis()) {
 			jedis.pfmerge(toBytes(destkey), toBytes(sourcekeys));
-		} finally {
-			jedis.close();
 		}
 	}
 	

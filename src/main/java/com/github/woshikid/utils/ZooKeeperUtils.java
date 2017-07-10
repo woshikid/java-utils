@@ -16,12 +16,10 @@ public class ZooKeeperUtils {
 	private static ZooKeeper zk = null;
 	
 	static {
-		InputStream in = ZooKeeperUtils.class.getResourceAsStream("/zookeeper.properties");
 		Properties config = new Properties();
 		
-		try {
+		try (InputStream in = ZooKeeperUtils.class.getResourceAsStream("/zookeeper.properties")) {
 			config.load(in);
-			in.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

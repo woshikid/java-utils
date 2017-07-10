@@ -27,7 +27,7 @@ public class HttpUtils {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 	private static final ThreadLocal<Boolean> followRedirects = new ThreadLocal<>();
-	private static int TIMEOUT = 60000;
+	private static final ThreadLocal<Integer> httpTimeout = new ThreadLocal<>();
 	
 	/**
 	 * 设置是否自动重定向302跳转
@@ -37,6 +37,16 @@ public class HttpUtils {
 	 */
 	public static void setFollowRedirects(boolean follow) {
 		followRedirects.set(follow);
+	}
+	
+	/**
+	 * 设置超时时间
+	 * 默认为60000
+	 * 本线程有效，并且在调用request方法后自动清除(仅生效一次)
+	 * @param timeout
+	 */
+	public static void setTimeout(int timeout) {
+		httpTimeout.set(timeout);
 	}
 	
 	/**
@@ -100,14 +110,12 @@ public class HttpUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Response request(String url, Map<String, String> header, byte[] data) throws Exception {
+	public static Response request(String url, Map<String, String> header, byte[] data) throws IOException {
 		long threadId = Thread.currentThread().getId();
 		logger.info("[{}] request url={}", threadId, url);
 		
 		//初始化连接并设置参数
 		HttpURLConnection http = (HttpURLConnection)new URL(url).openConnection();
-		http.setConnectTimeout(TIMEOUT);
-		http.setReadTimeout(TIMEOUT);
 		http.setUseCaches(false);
 		http.setDoInput(true);
 		http.setDoOutput(data != null);
@@ -119,6 +127,15 @@ public class HttpUtils {
 			followRedirects.remove();
 			http.setInstanceFollowRedirects(follow);
 		}
+		//设置超时时间
+		Integer timeout = httpTimeout.get();
+		if (timeout == null) {
+			timeout = 60000;
+		} else {
+			httpTimeout.remove();
+		}
+		http.setConnectTimeout(timeout);
+		http.setReadTimeout(timeout);
 		
 		//设置http头信息
 		if (header != null) {
@@ -132,85 +149,84 @@ public class HttpUtils {
 		//进行连接
 		http.connect();
 		
-		//发送请求数据
-		if (data != null) {
-			OutputStream out = http.getOutputStream();
-			out.write(data);
-			out.close();
-		}
-		
-		//接收返回数据
-		//如果对方服务器返回500等错误
-		//需要获取getErrorStream
-		InputStream in;
+		//处理数据
 		try {
-			in = http.getInputStream();
-		} catch (Exception e) {
-			in = http.getErrorStream();
-		}
-		
-		//处理gzip压缩
-		if (in != null) {
-			String encode = http.getContentEncoding();
-			if (encode != null && encode.trim().equalsIgnoreCase("gzip")) {
-				in = new GZIPInputStream(in);
-			}
-		}
-		
-		//读取返回数据至数组
-		ByteArrayOutputStream cache = new ByteArrayOutputStream();
-		if (in != null) {
-			int length;
-			byte[] buffer = new byte[8192];
-			
-			while ((length = in.read(buffer)) != -1) {
-				cache.write(buffer, 0, length);
-			}
-			
-			in.close();
-		}
-		
-		//开始组装返回内容
-		Response response = new Response();
-		response.data = cache.toByteArray();
-		response.header = http.getHeaderFields();
-		response.code = http.getResponseCode();
-		
-		//尝试解析字符编码格式
-		String contentType = http.getContentType();
-		if (contentType != null) {
-			Matcher matcher = Pattern.compile("(?i)\\bcharset\\s*=\\s*([^\\s;]+)").matcher(contentType);
-			if (matcher.find()) {
-				String charset = matcher.group(1);
-				if (Charset.isSupported(charset)) {
-					response.charset = Charset.forName(charset);
+			//发送请求数据
+			if (data != null) {
+				try (OutputStream out = http.getOutputStream()) {
+					out.write(data);
 				}
 			}
-		}
-		
-		//尝试从正文解析字符编码格式
-		if (response.charset == null) {
-			int length = response.data.length;
-			if (length > 1024) length = 1024;
 			
-			String head = new String(response.data, 0, length);
-			Matcher matcher = Pattern.compile("(?is)<meta\\s[^>]*\\bcharset\\s*=\\s*['\"]?\\s*([^\\s'\"/>]+)[^>]*>").matcher(head);
-			if (matcher.find()) {
-				String charset = matcher.group(1);
-				if (Charset.isSupported(charset)) {
-					response.charset = Charset.forName(charset);
+			//接收返回数据
+			//如果对方服务器返回500等错误
+			//需要获取getErrorStream
+			ByteArrayOutputStream cache = new ByteArrayOutputStream();
+			InputStream in;
+			try {
+				in = http.getInputStream();
+			} catch (IOException e) {
+				in = http.getErrorStream();
+			}
+			
+			if (in != null) {
+				try {
+					//处理gzip压缩
+					String encode = http.getContentEncoding();
+					if (encode != null && encode.trim().equalsIgnoreCase("gzip")) {
+						in = new GZIPInputStream(in);
+					}
+					
+					//读取返回数据至数组
+					int length;
+					byte[] buffer = new byte[8192];
+					while ((length = in.read(buffer)) != -1) {
+						cache.write(buffer, 0, length);
+					}
+				} finally {
+					in.close();
 				}
 			}
-		}
-		
-		//释放资源
-		try {
+			
+			//开始组装返回内容
+			Response response = new Response();
+			response.data = cache.toByteArray();
+			response.header = http.getHeaderFields();
+			response.code = http.getResponseCode();
+			
+			//尝试解析字符编码格式
+			String contentType = http.getContentType();
+			if (contentType != null) {
+				Matcher matcher = Pattern.compile("(?i)\\bcharset\\s*=\\s*([^\\s;]+)").matcher(contentType);
+				if (matcher.find()) {
+					String charset = matcher.group(1);
+					if (Charset.isSupported(charset)) {
+						response.charset = Charset.forName(charset);
+					}
+				}
+			}
+			
+			//尝试从正文解析字符编码格式
+			if (response.charset == null) {
+				int length = response.data.length;
+				if (length > 1024) length = 1024;
+				
+				String head = new String(response.data, 0, length);
+				Matcher matcher = Pattern.compile("(?is)<meta\\s[^>]*\\bcharset\\s*=\\s*['\"]?\\s*([^\\s'\"/>]+)[^>]*>").matcher(head);
+				if (matcher.find()) {
+					String charset = matcher.group(1);
+					if (Charset.isSupported(charset)) {
+						response.charset = Charset.forName(charset);
+					}
+				}
+			}
+			
+			logger.info("[{}] response.code={}", threadId, response.code);
+			logger.info("[{}] response.data.length={}", threadId, response.data.length);
+			return response;
+		} finally {
 			http.disconnect();
-		} catch (Exception e) {}
-		
-		logger.info("[{}] response.code={}", threadId, response.code);
-		logger.info("[{}] response.data.length={}", threadId, response.data.length);
-		return response;
+		}
 	}
 	
 	/**
@@ -218,10 +234,10 @@ public class HttpUtils {
 	 * @param input
 	 * @return
 	 */
-	public static String encodeUtf8(Object input){
-		try{
+	public static String encodeUtf8(Object input) {
+		try {
 			return URLEncoder.encode(String.valueOf(input), "UTF-8");
-		}catch(Exception e){
+		} catch (Exception e) {
 			return null;
 		}
 	}

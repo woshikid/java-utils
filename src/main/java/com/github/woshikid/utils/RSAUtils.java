@@ -74,16 +74,18 @@ public class RSAUtils {
 	}
 	
 	private String getKeyString(String keyName) throws Exception {
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream(keyName);
-		BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-		String temp = null;
-		StringBuffer sb = new StringBuffer();
-		while ((temp = br.readLine()) != null) {
-			sb.append(temp);
+		try (InputStream is = this.getClass().getClassLoader().getResourceAsStream(keyName);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+			
+			String temp = null;
+			StringBuffer sb = new StringBuffer();
+			
+			while ((temp = br.readLine()) != null) {
+				sb.append(temp);
+			}
+			
+			return sb.toString().replaceAll("-+[^-]+KEY-+", "");
 		}
-		String keyString =  sb.toString().replaceAll("-+[^-]+KEY-+", "");
-		br.close();
-		return keyString;
 	}
 	
 	private Key getKey(String client, String type) throws Exception {

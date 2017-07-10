@@ -162,11 +162,8 @@ public class DBUtils {
 	}
 	
 	public static List<Map<String, String>> query(String sql, Object... param) throws Exception {
-		Connection conn = getConnection();
-		try{
+		try (Connection conn = getConnection()) {
 			return query(sql, conn, queryTimeout, param);
-		}finally{
-			conn.close();
 		}
 	}
 	
@@ -234,11 +231,8 @@ public class DBUtils {
 	}
 	
 	public static int execute(String sql, Object... param) throws Exception {
-		Connection conn = getConnection();
-		try{
+		try (Connection conn = getConnection()) {
 			return execute(sql, conn, queryTimeout, param);
-		}finally{
-			conn.close();
 		}
 	}
 	
@@ -271,11 +265,8 @@ public class DBUtils {
 	}
 	
 	public static int update(String tableName, Map<String, Object> map, String where, Object... param) throws Exception {
-		Connection conn = getConnection();
-		try{
+		try (Connection conn = getConnection()) {
 			return update(tableName, map, where, conn, queryTimeout, param);
-		}finally{
-			conn.close();
 		}
 	}
 	
@@ -311,11 +302,8 @@ public class DBUtils {
 	}
 	
 	public static int insert(String tableName, Map<String, Object> map) throws Exception {
-		Connection conn = getConnection();
-		try{
+		try (Connection conn = getConnection()) {
 			return insert(tableName, map, conn, queryTimeout);
-		}finally{
-			conn.close();
 		}
 	}
 	
@@ -365,11 +353,8 @@ public class DBUtils {
 	}
 	
 	public static Object[] call(String callName, Object... param) throws Exception {
-		Connection conn = getConnection();
-		try{
+		try (Connection conn = getConnection()) {
 			return call(callName, conn, queryTimeout, param);
-		}finally{
-			conn.close();
 		}
 	}
 	

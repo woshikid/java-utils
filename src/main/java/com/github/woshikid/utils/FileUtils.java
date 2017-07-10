@@ -32,18 +32,19 @@ public class FileUtils {
 	public static boolean copyFile(File from, File to) throws Exception {
 		if (!from.isFile() || to.isDirectory() || from.equals(to)) return false;
 		
-		FileInputStream in = new FileInputStream(from);
-		FileOutputStream out = new FileOutputStream(to);
-		byte[] buffer = new byte[1024 * 1024];
-		
-		int length;
-		while ((length = in.read(buffer)) != -1) {
-			out.write(buffer, 0, length);
+		try (FileInputStream in = new FileInputStream(from);
+			FileOutputStream out = new FileOutputStream(to)) {
+			
+			byte[] buffer = new byte[1024 * 1024];
+			
+			int length;
+			while ((length = in.read(buffer)) != -1) {
+				out.write(buffer, 0, length);
+			}
+			
+			out.flush();
 		}
 		
-		out.flush();
-		out.close();
-		in.close();
 		return true;
 	}
 	
@@ -75,7 +76,6 @@ public class FileUtils {
 			cache.write(buffer, 0, length);
 		}
 		
-		in.close();
 		return cache.toByteArray();
 	}
 	
@@ -90,24 +90,28 @@ public class FileUtils {
 			buffer.append(line).append(System.lineSeparator());
 		}
 		
-		reader.close();
 		return buffer.toString();
 	}
 	
 	public static byte[] readFile(File file) throws Exception {
-		return readStream(new FileInputStream(file));
+		try (InputStream in = new FileInputStream(file)) {
+			return readStream(in);
+		}
 	}
 	
 	public static String readFile(File file, String charset) throws Exception {
 		if (charset == null) charset = Charset.defaultCharset().name();
-		return readStream(new FileInputStream(file), charset);
+		
+		try (InputStream in = new FileInputStream(file)) {
+			return readStream(in, charset);
+		}
 	}
 	
 	public static void writeFile(File file, byte[] data, boolean append) throws Exception {
-		FileOutputStream out = new FileOutputStream(file, append);
-		out.write(data);
-		out.flush();
-		out.close();
+		try (FileOutputStream out = new FileOutputStream(file, append)) {
+			out.write(data);
+			out.flush();
+		}
 	}
 	
 }

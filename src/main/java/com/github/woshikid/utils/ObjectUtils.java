@@ -24,9 +24,9 @@ public class ObjectUtils {
 	public static byte[] serialize(Object object) {
 		if (object == null) return new byte[0];
 		
-		try {
-			ByteArrayOutputStream byteStream = new ByteArrayOutputStream(1024);
-			ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+		try (ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+			ObjectOutputStream objectStream = new ObjectOutputStream(byteStream)) {
+			
 			objectStream.writeObject(object);
 			objectStream.flush();
 			
@@ -44,9 +44,8 @@ public class ObjectUtils {
 	public static Object deserialize(byte[] bytes) {
 		if (bytes == null || bytes.length == 0) return null;
 		
-		try {
-			ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
-			ObjectInputStream objectStream = new ObjectInputStream(byteStream);
+		try (ByteArrayInputStream byteStream = new ByteArrayInputStream(bytes);
+			ObjectInputStream objectStream = new ObjectInputStream(byteStream)) {
 			
 			return objectStream.readObject();
 		} catch (Exception e) {
