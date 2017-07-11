@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import redis.clients.jedis.BinaryClient;
 import redis.clients.jedis.BitOP;
@@ -282,11 +283,7 @@ public class RedisUtils {
 	private static List<String> toString(List<byte[]> byteList) {
 		if (byteList == null) return null;
 		
-		List<String> list = new ArrayList<>(byteList.size());
-		for (byte[] bytes : byteList) {
-			list.add(toString(bytes));
-		}
-		return list;
+		return byteList.parallelStream().map(bytes -> toString(bytes)).collect(Collectors.toList());
 	}
 	
 	/**
@@ -297,11 +294,7 @@ public class RedisUtils {
 	private static Set<String> toString(Set<byte[]> byteSet) {
 		if (byteSet == null) return null;
 		
-		Set<String> set = new HashSet<>(byteSet.size());
-		for (byte[] bytes : byteSet) {
-			set.add(toString(bytes));
-		}
-		return set;
+		return byteSet.parallelStream().map(bytes -> toString(bytes)).collect(Collectors.toSet());
 	}
 	
 	/**
