@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DBUtils {
 
 	public static String jndi = null;
+	public static DataSource ds = null;
 	private static int queryLimit = 1000;
 	private static int queryTimeout = 30;
 	private static final String colName = "thiscolumnisonlyusedforpaging_";
@@ -102,7 +103,18 @@ public class DBUtils {
 	}
 	
 	public static Connection getConnection() throws Exception {
-		return getConnection(jndi);
+		if (ds == null) {
+			if (jndi == null) return null;
+			
+			synchronized (DBUtils.class) {
+				if (ds == null) {
+					Context ctx = new InitialContext();
+					ds = (DataSource)ctx.lookup(jndi);
+				}
+			}
+		}
+		
+		return ds.getConnection();
 	}
 	
 	public static Connection getConnection(String jndi) throws Exception {
