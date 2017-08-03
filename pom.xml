@@ -2,9 +2,29 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.woshikid</groupId>
   <artifactId>java-utils</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>java-utils</name>
+  <version>1.0.0</version>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>java utils built by @woshikid</description>
   <url>https://github.com/woshikid/java-utils</url>
+  <licenses>
+  	<license>
+  		<name>The Apache License, Version 2.0</name>
+  		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+  	</license>
+  </licenses>
+  <developers>
+  	<developer>
+  		<name>woshikid</name>
+  		<email>name.kid@gmail.com</email>
+  		<organization>woshikid</organization>
+  		<organizationUrl>https://github.com/woshikid</organizationUrl>
+  	</developer>
+  </developers>
+  <scm>
+  	<connection>scm:git:https://github.com/woshikid/java-utils.git</connection>
+  	<developerConnection>scm:git:https://github.com/woshikid/java-utils.git</developerConnection>
+  	<url>https://github.com/woshikid/java-utils/tree/master</url>
+  </scm>
   <dependencies>
   	<dependency>
   		<groupId>com.alibaba</groupId>
@@ -121,7 +141,7 @@
   	</dependency>
   </dependencies>
   <build>
-  	<finalName>woshikid-utils</finalName>
+  	<finalName>woshikid-utils-${project.version}</finalName>
   	<resources>
   		<resource>
   			<directory>src/main/resources</directory>
@@ -161,4 +181,72 @@
   		</plugin>
   	</plugins>
   </build>
+  <profiles>
+  	<profile>
+  		<id>release</id>
+  		<build>
+  			<plugins>
+	  			<plugin>
+		  			<groupId>org.apache.maven.plugins</groupId>
+		  			<artifactId>maven-source-plugin</artifactId>
+		  			<executions>
+		  				<execution>
+		  					<goals>
+		  						<goal>jar-no-fork</goal>
+		  					</goals>
+		  				</execution>
+		  			</executions>
+		  		</plugin>
+		  		<plugin>
+		  			<groupId>org.apache.maven.plugins</groupId>
+		  			<artifactId>maven-javadoc-plugin</artifactId>
+		  			<configuration>
+		  				<charset>UTF-8</charset>
+		  				<encoding>UTF-8</encoding>
+		  				<docencoding>UTF-8</docencoding>
+		  			</configuration>
+		  			<executions>
+		  				<execution>
+		  					<goals>
+		  						<goal>jar</goal>
+		  					</goals>
+		  				</execution>
+		  			</executions>
+		  		</plugin>
+		  		<plugin>
+		  			<groupId>org.apache.maven.plugins</groupId>
+		  			<artifactId>maven-gpg-plugin</artifactId>
+		  			<executions>
+		  				<execution>
+		  					<phase>verify</phase>
+		  					<goals>
+		  						<goal>sign</goal>
+		  					</goals>
+		  				</execution>
+		  			</executions>
+		  		</plugin>
+		  		<plugin>
+		  			<groupId>org.sonatype.plugins</groupId>
+		  			<artifactId>nexus-staging-maven-plugin</artifactId>
+		  			<extensions>true</extensions>
+		  			<configuration>
+		  				<serverId>ossrh</serverId>
+		  				<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+		  				<autoReleaseAfterClose>true</autoReleaseAfterClose>
+		  			</configuration>
+		  		</plugin>
+	  		</plugins>
+  		</build>
+  	</profile>
+  </profiles>
+  <distributionManagement>
+  	<snapshotRepository>
+  		<id>ossrh</id>
+  		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  	</snapshotRepository>
+  	<repository>
+  		<id>ossrh</id>
+  		<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  	</repository>
+  </distributionManagement>
 </project>
