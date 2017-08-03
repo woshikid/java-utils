@@ -577,7 +577,7 @@ public class RedisUtils {
 	/**
 	 * 检查多个key是否在缓存中存在，返回存在的key的总个数
 	 * 如果一个key在参数中重复多次，则会被统计多次
-	 * @param key
+	 * @param keys
 	 * @return
 	 */
 	public static long exists(Object... keys) {
@@ -1831,8 +1831,8 @@ public class RedisUtils {
 	
 	/**
 	 * 删除list中count个指定的值元素
-	 * count > 0 从头部开始删除
-	 * count < 0 从尾部开始删除
+	 * count &gt; 0 从头部开始删除
+	 * count &lt; 0 从尾部开始删除
 	 * count = 0 删除所有匹配值
 	 * 数组长度为0时会删除整个key
 	 * @param key
@@ -2258,8 +2258,8 @@ public class RedisUtils {
 	
 	/**
 	 * 获取set里的多个随机元素
-	 * count > 0 返回不重复的元素，结果集有可能小于count
-	 * count < 0 返回有可能重复的count个元素
+	 * count &gt; 0 返回不重复的元素，结果集有可能小于count
+	 * count &lt; 0 返回有可能重复的count个元素
 	 * 如果key不存在则返回空set
 	 * @param key
 	 * @param count

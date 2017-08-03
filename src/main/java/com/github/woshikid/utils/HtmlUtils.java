@@ -20,7 +20,7 @@ public class HtmlUtils {
 	}
 	
 	/**
-	 * html escape, used in <input name="<%=HtmlUtils.value(?) %>">
+	 * html escape, used in &lt;input name="&lt;%=HtmlUtils.value(?) %&gt;"&gt;
 	 * @param value
 	 * @return
 	 */
@@ -30,7 +30,7 @@ public class HtmlUtils {
 	}
 	
 	/**
-	 * html escape, used in <textarea><%=HtmlUtils.content(?) %></textarea>
+	 * html escape, used in &lt;textarea&gt;&lt;%=HtmlUtils.content(?) %&gt;&lt;/textarea&gt;
 	 * @param value
 	 * @return
 	 */
@@ -40,7 +40,7 @@ public class HtmlUtils {
 	}
 	
 	/**
-	 * html escape, used in <tr><td><%=HtmlUtils.td(?) %></td></tr>
+	 * html escape, used in &lt;tr&gt;&lt;td&gt;&lt;%=HtmlUtils.td(?) %&gt;&lt;/td&gt;&lt;/tr&gt;
 	 * @param value
 	 * @return
 	 */

@@ -90,7 +90,6 @@ public class HttpUtils {
 		 * 得到任何情况下返回的文本
 		 * 包含302、404、500等返回码的情况
 		 * @return
-		 * @throws IOException
 		 */
 		public String getTextIgnoreError() {
 			if (charset != null) {
@@ -108,7 +107,7 @@ public class HttpUtils {
 	 * @param header 发送的头信息
 	 * @param data 发送的post数据
 	 * @return
-	 * @throws Exception
+	 * @throws IOException
 	 */
 	public static Response request(String url, Map<String, String> header, byte[] data) throws IOException {
 		long threadId = Thread.currentThread().getId();

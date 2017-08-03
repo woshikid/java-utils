@@ -149,7 +149,7 @@ public class DateUtils {
 	
 	/**
 	 * 根据long得到Calendar类型的时间
-	 * @param date
+	 * @param millis
 	 * @return
 	 */
 	public static Calendar toCalendar(long millis) {

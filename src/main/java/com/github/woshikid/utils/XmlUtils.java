@@ -59,12 +59,12 @@ public class XmlUtils {
 	 * @param object
 	 * @param encoding
 	 * @param fragment 如果为true，则不输出xml头
-	 * <?xml version="1.0" encoding="UTF-8"?>
-	 * @XmlRootElement(name="Config")
-	 * @XmlAccessorType(XmlAccessType.FIELD)
-	 * @XmlElementWrapper(name="Servers")
-	 * @XmlElement(name="Server")
-	 * @XmlJavaTypeAdapter(DateAdapter.class)
+	 * &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+	 * 注解@XmlRootElement(name="Config")
+	 * 注解@XmlAccessorType(XmlAccessType.FIELD)
+	 * 注解@XmlElementWrapper(name="Servers")
+	 * 注解@XmlElement(name="Server")
+	 * 注解@XmlJavaTypeAdapter(DateAdapter.class)
 	 * @return
 	 */
 	public static String toXml(Object object, String encoding, boolean fragment) {
