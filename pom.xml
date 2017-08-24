@@ -3,7 +3,7 @@
   <groupId>com.github.woshikid</groupId>
   <artifactId>java-utils</artifactId>
   <version>1.0.1</version>
-  <name>${project.groupId}:${project.artifactId}</name>
+  <name>woshikid-utils</name>
   <description>java utils built by @woshikid</description>
   <url>https://github.com/woshikid/java-utils</url>
   <licenses>
