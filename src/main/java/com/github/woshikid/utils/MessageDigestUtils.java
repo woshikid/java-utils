@@ -28,21 +28,18 @@ public class MessageDigestUtils {
 		return sb.toString();
 	}
 	
-	public static MessageDigest getDigest(String algorithmName) {
-		try {
-			return MessageDigest.getInstance(algorithmName);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	public static String digest(String algorithmName, byte[] bytes, int iterations) {
 		if (bytes == null) return null;
 		if (iterations < 1) throw new IllegalArgumentException();
 		
-		MessageDigest digest = getDigest(algorithmName);
-		for (int i = 0; i < iterations; i++) {
-			bytes = digest.digest(bytes);
+		try {
+			MessageDigest digest = MessageDigest.getInstance(algorithmName);
+			
+			for (int i = 0; i < iterations; i++) {
+				bytes = digest.digest(bytes);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 		
 		return byte2Hex(bytes);
