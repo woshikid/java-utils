@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.woshikid</groupId>
   <artifactId>java-utils</artifactId>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <name>woshikid-utils</name>
   <description>java utils built by @woshikid</description>
   <url>https://github.com/woshikid/java-utils</url>
