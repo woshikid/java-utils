@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 
@@ -101,14 +102,9 @@ public class ObjectUtils {
 		while ((clazz = clazz.getSuperclass()) != null) {
 			Field[] newFields = clazz.getDeclaredFields();
 			if (newFields.length == 0) continue;
-			
-			//复制插入父类的属性
-			//数组中父类的属性在前，子类的属性在后
-			//这样便于在循环中，子类的属性覆盖父类的属性
-			Field[] fields = allFields;
-			allFields = new Field[newFields.length + fields.length];
-			System.arraycopy(newFields, 0, allFields, 0, newFields.length);
-			System.arraycopy(fields, 0, allFields, newFields.length, fields.length);
+
+			allFields = Arrays.copyOf(allFields, allFields.length + newFields.length);
+			System.arraycopy(newFields, 0, allFields, allFields.length - newFields.length, newFields.length);
 		}
 		
 		return allFields;
