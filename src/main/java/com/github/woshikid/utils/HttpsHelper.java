@@ -16,8 +16,8 @@ import javax.net.ssl.X509TrustManager;
  */
 public class HttpsHelper {
 	
-	private static SSLContext defaultSSLContext = null;
-	private static HostnameVerifier defaultHostnameVerifier = null;
+	private static volatile SSLContext defaultSSLContext = null;
+	private static volatile HostnameVerifier defaultHostnameVerifier = null;
 	
 	private static SSLContext getSSLContext() throws Exception {
 		TrustManager trustAllCerts = new X509TrustManager() {

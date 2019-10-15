@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DBUtils {
 
 	public static String jndi = null;
-	public static DataSource ds = null;
+	public static volatile DataSource ds = null;
 	private static int queryLimit = 1000;
 	private static int queryTimeout = 30;
 	private static final String colName = "thiscolumnisonlyusedforpaging_";
@@ -38,7 +38,7 @@ public class DBUtils {
 	public static boolean cacheEnable = true;
 	private static int cacheLimit = 500;
 	private static long cacheTime = 24 * 60 * 60 * 1000;
-	private static Map<String, Map<String, Object>> cache = new LinkedHashMap<String, Map<String, Object>>(16, 0.75f, true);
+	private static volatile Map<String, Map<String, Object>> cache = new LinkedHashMap<String, Map<String, Object>>(16, 0.75f, true);
 	private static long lastClean = System.currentTimeMillis();
 	
 	private Connection conn = null;
