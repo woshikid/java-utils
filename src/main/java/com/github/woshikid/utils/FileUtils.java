@@ -1,13 +1,10 @@
 package com.github.woshikid.utils;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
 /**
  * 
@@ -29,26 +26,18 @@ public class FileUtils {
 		}
 	}
 	
-	public static boolean copyFile(File from, File to) throws Exception {
+	public static boolean copyFile(File from, File to) throws IOException {
 		if (!from.isFile() || to.isDirectory() || from.equals(to)) return false;
 		
 		try (FileInputStream in = new FileInputStream(from);
 			FileOutputStream out = new FileOutputStream(to)) {
-			
-			byte[] buffer = new byte[1024 * 1024];
-			
-			int length;
-			while ((length = in.read(buffer)) != -1) {
-				out.write(buffer, 0, length);
-			}
-			
-			out.flush();
+			IOUtils.copyStream(in, out);
 		}
 		
 		return true;
 	}
 	
-	public static boolean deleteFile(File file) throws Exception {
+	public static boolean deleteFile(File file) {
 		if (file.isFile()) return file.delete();
 		
 		if (file.isDirectory()) {
@@ -62,55 +51,36 @@ public class FileUtils {
 		return true;
 	}
 	
-	public static boolean moveFile(File from, File to) throws Exception {
+	public static boolean moveFile(File from, File to) throws IOException {
 		if (!copyFile(from, to)) return false;
 		return deleteFile(from);
 	}
 	
-	public static byte[] readStream(InputStream in) throws Exception {
-		ByteArrayOutputStream cache = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024 * 1024];
-		
-		int length;
-		while ((length = in.read(buffer)) != -1) {
-			cache.write(buffer, 0, length);
-		}
-		
-		return cache.toByteArray();
-	}
-	
-	public static String readStream(InputStream in, String charset) throws Exception {
-		if (charset == null) charset = Charset.defaultCharset().name();
-		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(in, charset));
-		StringBuffer buffer = new StringBuffer();
-		
-		String line;
-		while ((line = reader.readLine()) != null) {
-			buffer.append(line).append(System.lineSeparator());
-		}
-		
-		return buffer.toString();
-	}
-	
-	public static byte[] readFile(File file) throws Exception {
+	public static byte[] readFile(File file) throws IOException {
 		try (InputStream in = new FileInputStream(file)) {
-			return readStream(in);
+			return IOUtils.readStream(in);
 		}
 	}
 	
-	public static String readFile(File file, String charset) throws Exception {
-		if (charset == null) charset = Charset.defaultCharset().name();
-		
+	public static String readFile(File file, String charset) throws IOException {
 		try (InputStream in = new FileInputStream(file)) {
-			return readStream(in, charset);
+			return IOUtils.readStream(in, charset);
 		}
 	}
 	
-	public static void writeFile(File file, byte[] data, boolean append) throws Exception {
+	public static void writeFile(File file, byte[] data, boolean append) throws IOException {
 		try (FileOutputStream out = new FileOutputStream(file, append)) {
 			out.write(data);
-			out.flush();
+		}
+	}
+	
+	public static void writeFile(File file, byte[] data) throws IOException {
+		writeFile(file, data, false);
+	}
+	
+	public static void writeFile(File file, InputStream in) throws IOException {
+		try (FileOutputStream out = new FileOutputStream(file)) {
+			IOUtils.copyStream(in, out);
 		}
 	}
 	
