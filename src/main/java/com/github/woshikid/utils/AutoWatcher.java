@@ -8,14 +8,13 @@ import org.apache.zookeeper.ZooKeeper;
 import org.apache.zookeeper.ZooKeeper.States;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 
  * @author kid
  *
  */
-public abstract class AutoWatcher implements Watcher, InitializingBean {
+public abstract class AutoWatcher implements Watcher {
 
 	private final static Logger logger = LoggerFactory.getLogger(AutoWatcher.class);
 	
@@ -64,8 +63,4 @@ public abstract class AutoWatcher implements Watcher, InitializingBean {
 	
 	protected abstract void doProcess(WatchedEvent event) throws Exception;
 	
-	public final void afterPropertiesSet() throws Exception {
-		register();
-	}
-
 }
