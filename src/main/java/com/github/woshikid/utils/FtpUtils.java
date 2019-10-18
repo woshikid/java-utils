@@ -1,23 +1,22 @@
 package com.github.woshikid.utils;
 
-import sun.net.ftp.FtpClient;
-import sun.net.ftp.FtpDirEntry;
-import sun.net.ftp.FtpProtocolException;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+
+import sun.net.ftp.FtpClient;
+import sun.net.ftp.FtpProtocolException;
 
 /**
  * sun的ftp工具
  * JDK 1.8
  * @author kid
  */
+@SuppressWarnings("restriction")
 public class FtpUtils implements Closeable {
 	
 	private FtpClient ftp;
@@ -79,6 +78,7 @@ public class FtpUtils implements Closeable {
 	 * 关闭ftp连接
 	 * @throws IOException
 	 */
+	@Override
 	public void close() throws IOException {
 		ftp.close();
 	}
@@ -91,14 +91,8 @@ public class FtpUtils implements Closeable {
 	 * @throws FtpProtocolException
 	 */
 	public List<String> list(String path) throws IOException, FtpProtocolException {
-		Iterator<FtpDirEntry> it = ftp.listFiles(path);
 		List<String> list = new ArrayList<>();
-		
-		while (it.hasNext()) {
-			String name = it.next().getName();
-			list.add(name);
-		}
-		
+		ftp.listFiles(path).forEachRemaining(e -> list.add(e.getName()));
 		return list;
 	}
 
