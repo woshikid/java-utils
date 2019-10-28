@@ -77,10 +77,19 @@ public class DateUtils {
 
 	/**
 	 * 得到当前时间戳
+	 * @param length
+	 * @return
+	 */
+	public static String timestamp(int length) {
+		return toTimestampString(new Date(), length);
+	}
+	
+	/**
+	 * 得到当前时间戳
 	 * @return
 	 */
 	public static String timestamp() {
-		return toTimestampString(new Date());
+		return timestamp(17);
 	}
 	
 	/**
@@ -529,10 +538,30 @@ public class DateUtils {
 	/**
 	 * 将日期格式化为时间戳
 	 * @param date
+	 * @param length
+	 * @return
+	 */
+	public static String toTimestampString(Date date, int length) {
+		return toString(date, TIMESTAMP_FORMAT.substring(0, length));
+	}
+	
+	/**
+	 * 将日期格式化为时间戳
+	 * @param date
 	 * @return
 	 */
 	public static String toTimestampString(Date date) {
-		return toString(date, TIMESTAMP_FORMAT);
+		return toTimestampString(date, 17);
+	}
+	
+	/**
+	 * 将LocalDateTime格式化为时间戳
+	 * @param localDateTime
+	 * @param length
+	 * @return
+	 */
+	public static String toTimestampString(LocalDateTime localDateTime, int length) {
+		return toString(localDateTime, TIMESTAMP_FORMAT.substring(0, length));
 	}
 	
 	/**
@@ -541,7 +570,17 @@ public class DateUtils {
 	 * @return
 	 */
 	public static String toTimestampString(LocalDateTime localDateTime) {
-		return toString(localDateTime, TIMESTAMP_FORMAT);
+		return toTimestampString(localDateTime, 17);
+	}
+	
+	/**
+	 * 将Instant格式化为时间戳
+	 * @param instant
+	 * @param length
+	 * @return
+	 */
+	public static String toTimestampString(Instant instant, int length) {
+		return toTimestampString(toLocalDateTime(instant), length);
 	}
 	
 	/**
@@ -550,7 +589,7 @@ public class DateUtils {
 	 * @return
 	 */
 	public static String toTimestampString(Instant instant) {
-		return toTimestampString(toLocalDateTime(instant));
+		return toTimestampString(instant, 17);
 	}
 	
 	/**

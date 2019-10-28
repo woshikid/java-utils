@@ -1,7 +1,9 @@
 package com.github.woshikid.utils;
 
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -108,6 +110,31 @@ public class IDUtils {
 	 */
 	public static String uuid() {
 		return UUID.randomUUID().toString().replace("-", "");
+	}
+	
+	/**
+	 * 生成带时间戳的uuid
+	 * @return
+	 */
+	public static String tuid() {
+		return DateUtils.timestamp() + uuid().substring(17);
+	}
+	
+	/**
+	 * 生成指定长度的随机数
+	 * @param length
+	 * @return
+	 */
+	public static String random(int length) {
+		return new Random().ints(length, 0, 10).mapToObj(Integer::toString).collect(Collectors.joining());
+	}
+	
+	/**
+	 * 生成32位带时间戳的随机数
+	 * @return
+	 */
+	public static String trid() {
+		return DateUtils.timestamp() + random(15);
 	}
 	
 }
