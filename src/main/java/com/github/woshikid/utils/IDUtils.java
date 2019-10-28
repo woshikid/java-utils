@@ -95,12 +95,12 @@ public class IDUtils {
 	 * 生成指定长度的sn
 	 * 不足的部分用0前置填充
 	 * 超出部分截取末尾
-	 * @param sn 原始序列号
+	 * @param origin 原始序列号
 	 * @param length 指定长度
 	 * @return
 	 */
-	public static String getSN(String sn, int length) {
-		sn = StringUtils.leftPad(sn, length, '0');
+	public static String getSN(Object origin, int length) {
+		String sn = StringUtils.leftPad(origin.toString(), length, '0');
 		return StringUtils.right(sn, length);
 	}
 
