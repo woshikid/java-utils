@@ -402,7 +402,7 @@ public class DTOUtils {
 	 */
 	private static <T> T map(Object source, Class<T> targetClass, boolean reset) {
 		try {
-			T target = targetClass.newInstance();
+			T target = targetClass.getDeclaredConstructor().newInstance();
 			
 			if (source instanceof Map) {
 				map((Map<?, ?>)source, target, reset);
